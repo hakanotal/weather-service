@@ -4,7 +4,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
 
-@Component
+/*@Component
 public class KafkaSender extends RouteBuilder {
 
     @Override
@@ -15,4 +15,4 @@ public class KafkaSender extends RouteBuilder {
                 .to("kafka://weather-topic");
 
     }
-}
+}*/

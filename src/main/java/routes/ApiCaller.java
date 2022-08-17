@@ -17,8 +17,8 @@ public class ApiCaller extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        from("timer:my-restapi-consumer?period=15m")
-                .toD("http://api.openweathermap.org/data/2.5/weather?q=London&appid={$apiKey}")
+        from("timer:my-restapi-consumer?period=15s")
+                .toD(String.format("http://api.openweathermap.org/data/2.5/weather?q=London&appid=%s", apiKey))
                 .wireTap("log:api-response")
                 .unmarshal()
                 .json(JsonLibrary.Jackson, ApiResponse.class)
@@ -31,7 +31,7 @@ public class ApiCaller extends RouteBuilder {
                 })
                 .wireTap("log:weather-data")
                 .multicast()
-                    .to("direct:weather-kafka")
+                    //.to("direct:weather-kafka")
                     .to("direct:db-save")
                 .end();
     }

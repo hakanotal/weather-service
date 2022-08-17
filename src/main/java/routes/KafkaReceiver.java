@@ -3,6 +3,7 @@ package routes;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
+/*
 @Component
 public class KafkaReceiver extends RouteBuilder {
 
@@ -13,3 +14,4 @@ public class KafkaReceiver extends RouteBuilder {
                 .log("Received from Kafka: ${body}");
     }
 }
+*/

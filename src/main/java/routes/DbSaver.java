@@ -24,6 +24,6 @@ public class DbSaver extends RouteBuilder {
                         weatherRepo.save(weather);
                     }
                 })
-                .log("Saved to db: ${body}");
+                .wireTap("log:saved-to-db");
     }
 }
