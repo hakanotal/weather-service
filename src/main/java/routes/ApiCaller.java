@@ -14,25 +14,25 @@ public class ApiCaller extends RouteBuilder {
     @Value("${API_KEY}")
     private String apiKey;
 
+    private final String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=";
+
     @Override
     public void configure() throws Exception {
 
         from("timer:my-restapi-consumer?period=15s")
-                .toD(String.format("http://api.openweathermap.org/data/2.5/weather?q=London&appid=%s", apiKey))
-                .wireTap("log:api-response")
-                .unmarshal()
-                .json(JsonLibrary.Jackson, ApiResponse.class)
-                .process(new Processor() {
-                    @Override
-                    public void process(Exchange exchange) throws Exception {
-                        ApiResponse apiResponse = exchange.getIn().getBody(ApiResponse.class);
-                        exchange.getIn().setBody(apiResponse.toWeather());
-                    }
-                })
-                .wireTap("log:weather-data")
-                .multicast()
-                    //.to("direct:weather-kafka")
-                    .to("direct:db-save")
-                .end();
+            .toD(API_URL + apiKey)
+
+            .wireTap("log:api-response")
+
+            .unmarshal()
+            .json(JsonLibrary.Jackson, ApiResponse.class)
+            .process("apiResponseProcessor")
+
+            .wireTap("log:weather-data")
+
+            .multicast().parallelProcessing()
+                .to("kafka://weather-topic")
+                .process("weatherSaveProcessor")
+            .end();
     }
 }
